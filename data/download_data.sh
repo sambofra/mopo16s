@@ -1,3 +1,8 @@
+# clear previous files
+rm gg_13_5_otus.tar.gz
+rm supplementary_table_01.xlsx
+rm supplementary_table_08.xlsx
+
 # download GreenGenes reference sequences
 wget ftp://greengenes.microbio.me/greengenes_release/gg_13_5/gg_13_5_otus.tar.gz
 
