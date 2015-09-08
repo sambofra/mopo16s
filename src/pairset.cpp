@@ -1,3 +1,22 @@
+/*
+ *  This file is part of the optprimer program.
+ *  Copyright (c) Francesco Sambo <sambofra@dei.unipd.it>
+ *
+ *  optprimer is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  optprimer is distributed in the hope that it will be useful, but
+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See 
+ *  the GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 #include "pairset.hpp"
 
 PairSet::PairSet( IupacString degPrFwd, IupacString degPrRev, ReferenceSet& refSet,
@@ -180,7 +199,7 @@ void PairSet::computeScores()
 	
 	// std::cout << "median\n";
 	
-	Stats stats = statsAmpLen( pars->maxALenSpanFeasQtile );
+	Stats stats = statsAmpLen( pars->maxALenSpanEffQtile );
 	// std::cout << "Median amplicon length: " << medALen << "\n";
 	
 	covScore = 0;
@@ -220,10 +239,10 @@ void PairSet::computeScores()
 	//std::cout << "Coverage score: " << covScore << "\n";
 	//std::cout << "Variation score: " << varScore << "\n";
 	
-	/* compute feasibility score */
+	/* compute efficiency score */
 	
-	// Fuzzy feasibility tests of the primer pair
-	vector<double > feas( 10, 0 );
+	// Fuzzy efficiency tests of the primer pair
+	vector<double > eff( 10, 0 );
 	
 	// melting temperature
 	double dTm = std::max( *(std::max_element(tmFwd.begin(), tmFwd.end())), 
@@ -234,20 +253,20 @@ void PairSet::computeScores()
 	// std::cout << dTm << "\n";
 	 
 	if( dTm > pars->dTm )
-		feas[7] = std::max((pars->dTm + pars->dTmInt - dTm)/pars->dTmInt, 0.0);
+		eff[7] = std::max((pars->dTm + pars->dTmInt - dTm)/pars->dTmInt, 0.0);
 	else
-		feas[7] = 1;
+		eff[7] = 1;
 	
 	// amplicon length span
 	if( stats.median > 0 ) // otherwise no coverage at all
 	{
 		int span = stats.median - stats.quantile;
-		if( span > pars->maxALenSpanFeas / 2 )
-			feas[8] = std::max( (pars->maxALenSpanFeas/2.0 + pars->maxALenSpanFeasInt - span) /
-				 pars->maxALenSpanFeasInt, 0.0 );
-		else feas[8] = 1;
+		if( span > pars->maxALenSpanEff )
+			eff[8] = std::max( (double)(pars->maxALenSpanEff + pars->maxALenSpanEffInt - span) /
+				 pars->maxALenSpanEffInt, 0.0 );
+		else eff[8] = 1;
 	}
-	else feas[8] = 0;
+	else eff[8] = 0;
 	
 	// dimers
 	uint curDim, maxDim = 0;
@@ -261,33 +280,33 @@ void PairSet::computeScores()
 		}
 	//std::cout << "\n";
 	if (maxDim > pars->maxDim)
-		feas[9] = std::max( ((double)pars->maxDim + pars->maxDimInt - maxDim) / 
+		eff[9] = std::max( ((double)pars->maxDim + pars->maxDimInt - maxDim) / 
 			pars->maxDimInt, 0.0 );
-	else feas[9] = 1;
+	else eff[9] = 1;
 	
-	// Average feasibility of the single primers
-	vector<double> singleFeas;
+	// Average efficiency of the single primers
+	vector<double> singleEff;
 	for (i = 0; i < setLength( true ); i++ )
 	{
-		singleFeas = feasTestsPrimer( fwd[i], *pars );
+		singleEff = effTestsPrimer( fwd[i], *pars );
 		for( j = 0; j < 7; j++ )
-			feas[j] += singleFeas[j];
+			eff[j] += singleEff[j];
 	}
 	for (i = 0; i < setLength( false ); i++ )
 	{
-		singleFeas = feasTestsPrimer( rev[i], *pars );
+		singleEff = effTestsPrimer( rev[i], *pars );
 		for( j = 0; j < 7; j++ )
-			feas[j] += singleFeas[j];
+			eff[j] += singleEff[j];
 	}
 	for( j = 0; j < 7; j++ )
-		feas[j] /= (setLength( true ) + setLength( false ));
+		eff[j] /= (setLength( true ) + setLength( false ));
 	
-	// Feasibiliy score as sum of feas
-	feaScore = std::accumulate(feas.begin(), feas.end(), 0.0);
+	// Effibiliy score as sum of eff
+	feaScore = std::accumulate(eff.begin(), eff.end(), 0.0);
 	//for( i = 0; i < 10; i++ )
-	//	std::cout << feas[i] << " ";
+	//	std::cout << eff[i] << " ";
 	//std::cout << "\n";
-	//std::cout << "Feasibility score: " << feaScore << "\n";
+	//std::cout << "Effibility score: " << feaScore << "\n";
 }
 
 void PairSet::updateCovPairs()
@@ -431,7 +450,7 @@ double PairSet::getVarSc() const
 	return( varScore );
 }
 
-double PairSet::getFeaSc() const
+double PairSet::getEffSc() const
 {
 	return( feaScore );
 }

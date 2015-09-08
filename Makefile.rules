@@ -1,4 +1,6 @@
 SRC=../src
+
+# replace this with your SeqAn include directory
 CXXFLAGS+=-I../../seqan-library-2.0.0/include
 
 uname_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')
@@ -6,8 +8,8 @@ ifeq ($(uname_S),Linux)
 	LFLAGS=-lrt
 endif
 
-DEPS = $(SRC)/referenceset.hpp $(SRC)/feasibility.hpp $(SRC)/pairset.hpp $(SRC)/parameters.hpp $(SRC)/localsearch.hpp
-OBJ = optprimer.o referenceset.o feasibility.o pairset.o localsearch.o
+DEPS = $(SRC)/referenceset.hpp $(SRC)/efficiency.hpp $(SRC)/pairset.hpp $(SRC)/parameters.hpp $(SRC)/localsearch.hpp
+OBJ = optprimer.o referenceset.o efficiency.o pairset.o localsearch.o
 
 default: all
 all: optprimer

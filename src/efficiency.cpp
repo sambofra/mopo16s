@@ -1,6 +1,25 @@
-#include "feasibility.hpp"
+/*
+ *  This file is part of the optprimer program.
+ *  Copyright (c) Francesco Sambo <sambofra@dei.unipd.it>
+ *
+ *  optprimer is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  optprimer is distributed in the hope that it will be useful, but
+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See 
+ *  the GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
-// matrices for calculating melting temperature
+#include "efficiency.hpp"
+
+// matrix for calculating melting temperature
 const vector<vector<double> > dHMat = {
 	{-7.9,-8.4,-7.8,-7.2},
 	{-8.5,-8.0,-10.6,-7.8},
@@ -218,9 +237,9 @@ bool noHairpins( IupacString& primer )
 	return(true);
 }
 
-vector<double> feasTestsPrimer( IupacString& primer, Parameters& pars )
+vector<double> effTestsPrimer( IupacString& primer, Parameters& pars )
 {
-	/* compute feasibility scores */
+	/* compute efficiency scores */
 	vector<double > res( 7, 1 );
 	
 	// melting temperature

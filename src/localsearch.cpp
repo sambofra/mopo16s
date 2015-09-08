@@ -1,3 +1,22 @@
+/*
+ *  This file is part of the optprimer program.
+ *  Copyright (c) Francesco Sambo <sambofra@dei.unipd.it>
+ *
+ *  optprimer is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  optprimer is distributed in the hope that it will be useful, but
+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See 
+ *  the GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 #include "localsearch.hpp"
 
 uint Archive::length()
@@ -11,7 +30,7 @@ bool Archive::add( const PairSet& pSet )
 	// check if already present in the archive, based on the scores
 	for( i = 0; i < pSets.size(); i++ )
 		if( pSets[i].getCovSc() == pSet.getCovSc() && 
-			pSets[i].getFeaSc() == pSet.getFeaSc() &&
+			pSets[i].getEffSc() == pSet.getEffSc() &&
 			pSets[i].getVarSc() == pSet.getVarSc())
 			return false;
 	// add
@@ -35,7 +54,7 @@ vector<uint> Archive::paretoFront()
 		// search if equal of worse according to all scores
 		for( j = 0; j < pSets.size(); j++ )
 			if( j != i && pSets[i].getCovSc() <= pSets[j].getCovSc() && 
-				pSets[i].getFeaSc() <= pSets[j].getFeaSc() &&
+				pSets[i].getEffSc() <= pSets[j].getEffSc() &&
 				pSets[i].getVarSc() >= pSets[j].getVarSc() )
 			{
 				worse = true;
@@ -61,10 +80,10 @@ Bounds Archive::getBounds()
 		if( pSets[i].getCovSc() < b.minCovSc )
 			b.minCovSc = pSets[i].getCovSc();
 		
-		if( pSets[i].getFeaSc() > b.maxFeaSc )
-			b.maxFeaSc = pSets[i].getFeaSc();
-		if( pSets[i].getFeaSc() < b.minFeaSc )
-			b.minFeaSc = pSets[i].getFeaSc();
+		if( pSets[i].getEffSc() > b.maxFeaSc )
+			b.maxFeaSc = pSets[i].getEffSc();
+		if( pSets[i].getEffSc() < b.minFeaSc )
+			b.minFeaSc = pSets[i].getEffSc();
 		
 		if( pSets[i].getVarSc() > b.maxVarSc )
 			b.maxVarSc = pSets[i].getVarSc();
@@ -86,7 +105,7 @@ PairSet localSearch( PairSet& init, vector<double>& alpha, Parameters& pars, Bou
 	double tmpWSc;
 	
 	std::cout.precision(4);
-	std::cout << bestPair.getCovSc() << "\t" << bestPair.getFeaSc() << "\t";
+	std::cout << bestPair.getCovSc() << "\t" << bestPair.getEffSc() << "\t";
 	std::cout << bestPair.getVarSc() << "\t" << bestWSc << "\n";
 		
 	bool improve = true;
@@ -110,7 +129,7 @@ PairSet localSearch( PairSet& init, vector<double>& alpha, Parameters& pars, Bou
 							bestPair = tmpPair;
 							bestWSc = tmpWSc;
 							improve = true;
-							std::cout << bestPair.getCovSc() << "\t" << bestPair.getFeaSc() << "\t";
+							std::cout << bestPair.getCovSc() << "\t" << bestPair.getEffSc() << "\t";
 							std::cout << bestPair.getVarSc() << "\t" << bestWSc << "\t";
 							std::cout << (fwdSet ? "fwd " : "rev ") << p << ": flip\t";
 							std::cout << bestPair.getPrimer( fwdSet, p ) << "\n";
@@ -133,7 +152,7 @@ PairSet localSearch( PairSet& init, vector<double>& alpha, Parameters& pars, Bou
 								bestPair = tmpPair;
 								bestWSc = tmpWSc;
 								improve = true;
-								std::cout << bestPair.getCovSc() << "\t" << bestPair.getFeaSc() << "\t";
+								std::cout << bestPair.getCovSc() << "\t" << bestPair.getEffSc() << "\t";
 								std::cout << bestPair.getVarSc() << "\t" << bestWSc << "\t";
 								std::cout << (fwdSet ? "fwd " : "rev ") << p << ": add\t";
 								std::cout << bestPair.getPrimer( fwdSet, p ) << "\n";
@@ -151,7 +170,7 @@ PairSet localSearch( PairSet& init, vector<double>& alpha, Parameters& pars, Bou
 							bestPair = tmpPair;
 							bestWSc = tmpWSc;
 							improve = true;
-							std::cout << bestPair.getCovSc() << "\t" << bestPair.getFeaSc() << "\t";
+							std::cout << bestPair.getCovSc() << "\t" << bestPair.getEffSc() << "\t";
 							std::cout << bestPair.getVarSc() << "\t" << bestWSc << "\t";
 							std::cout << (fwdSet ? "fwd " : "rev ") << p << ": trim\t";
 							std::cout << bestPair.getPrimer( fwdSet, p ) << "\n";
@@ -166,12 +185,11 @@ PairSet localSearch( PairSet& init, vector<double>& alpha, Parameters& pars, Bou
 	return bestPair;
 }
 
-Archive multiObjSearch( ReferenceSet& ref, StringSet<IupacString>& goodPairs, Parameters& pars,
-	uint nRest, uint seed )
+Archive multiObjSearch( ReferenceSet& ref, StringSet<IupacString>& goodPairs, Parameters& pars )
 {
 	uint i;
 	// initialize rng
-	std::mt19937 rng( seed );
+	std::mt19937 rng( pars.seed );
 	
 	// build and populate archive
 	Archive ar;
@@ -185,7 +203,7 @@ Archive multiObjSearch( ReferenceSet& ref, StringSet<IupacString>& goodPairs, Pa
 	PairSet init = ar.get( 0 );
 	
 	// Cycle, sampling from Pareto front and running local search
-	for( i = 0; i < nRest; i++ )
+	for( i = 0; i < pars.rest; i++ )
 	{
 		std::cout << "Restart " << i << "\n";
 		init = ar.get( pFront[ rng() % pFront.size()] );
