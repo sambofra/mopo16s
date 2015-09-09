@@ -26,3 +26,13 @@
 *.exe
 *.out
 *.app
+
+# Downloaded and generated files in the data folder
+data/gg_13_5_otus/
+data/good_pairs.fasta
+data/rep_set.fasta
+data/supplementary_table_01.xlsx
+data/supplementary_table_08.xlsx
+
+# Generated documentation
+doc/html/
