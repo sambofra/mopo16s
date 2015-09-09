@@ -233,16 +233,22 @@ void usage()
 	cout << "initial_primer_pairs_file is a .fasta file containing a set of (possibly" << endl;
 	cout << "degenerate) primer pairs from which to start the optimisation, saved" << endl; 
 	cout << "alterning the forward and its corresponding reverse primer." << endl << endl;
-	cout << " Options:" << endl << endl;
+	cout << "Common options:" << endl << endl;
 	cout << "  -s, --seed=LONG             Seed of the random number generator (default 0)" << endl << endl;
 	cout << "  -r, --restarts=INT          Number of restarts of the multi-objective" << endl;
 	cout << "                              optimisation algorithm (default 20)" << endl << endl;
 	cout << "  -o, --outFileName=FNAME     Root name of the output files (default \"out\")" << endl << endl;
+	cout << "  -h, --help                  Print this help and exit" << endl << endl;
+	cout << "Coverage-related options:" << endl << endl;
 	cout << "  -M, --maxMismatches=INT     Maximum number of mismatches between the" << endl;
 	cout << "                              non-3\'-end of the primer and a 16S sequence to" << endl;
 	cout << "                              consider the latter covered by the primer, in" << endl;
 	cout << "                              case also the 3\'-end perfectly matches" << endl;
 	cout << "                              (default 2)" << endl << endl;
+	cout << "  -S, --maxALenSpanC=INT      Maximum amplicon length span considered when" << endl;
+	cout << "                              computing coverage (half above, half below " << endl;
+	cout << "                              median) (default 200)" << endl << endl;
+	cout << "Efficiency-related options:" << endl << endl;
 	cout << "  -l, --minPrimerLen=INT      Minimum primer length (default 17)" << endl << endl;
 	cout << "  -L, --maxPrimerLen=INT      Maximum primer length (default 21)" << endl << endl;
 	cout << "  -m, --minTm=INT             Minimum primer melting temperature (default 52)" << endl << endl; 
@@ -254,12 +260,10 @@ void usage()
 	cout << "  -p, --maxHomopLen=INT       Maximum homopolymer length (default 4)" << endl << endl;
 	cout << "  -d, --maxDeltaTm=INT        Maximum span of melting temparatures for the" << endl;
 	cout << "                              primer sets (default 3)" << endl << endl;
-	cout << "  -S, --maxALenSpanC=INT      Maximum amplicon length span considered when" << endl;
-	cout << "                              computing coverage (half above, half below " << endl;
-	cout << "                              median) (default 200)" << endl << endl;
 	cout << "  -e, --maxALenSpanE=INT      Maximum span (maxALenSpanE) between median and" << endl;
 	cout << "  -q, --maxALenSpanEQ=DOUBLE  given quantile (maxALenSpanEQ) of amplicon" << endl;
 	cout << "                              length (default 50 and 0.01, respectively)" << endl << endl;
+	cout << "Fuzzy tolerance intervals for efficiency-related options:" << endl << endl;
 	cout << "  -t, --minTmInterv=INT       Fuzzy tolerance interval for minimum melting" << endl;
 	cout << "                              temperature (default 2)" << endl << endl;
 	cout << "  -g, --minGCContInt=DOUBLE   Fuzzy tolerance interval for minimum GC" << endl;
@@ -273,7 +277,6 @@ void usage()
 	cout << "  -E, --maxALenSpanEI=INT     Fuzzy tolerance interval for maximum span" << endl;
 	cout << "                              between median and given quantile amplicon" << endl; 
 	cout << "                              length (default 50)"<< endl << endl;
-	cout << "  -h, --help                  Print this help and exit" << endl << endl;
 	cout << "Mandatory arguments to long options are also mandatory for any corresponding" << endl;
 	cout << "short options." << endl << endl;
 }

@@ -9,19 +9,19 @@ ifeq ($(uname_S),Linux)
 endif
 
 DEPS = $(SRC)/referenceset.hpp $(SRC)/efficiency.hpp $(SRC)/pairset.hpp $(SRC)/parameters.hpp $(SRC)/localsearch.hpp
-OBJ = optprimer.o referenceset.o efficiency.o pairset.o localsearch.o
+OBJ = mopo16s.o referenceset.o efficiency.o pairset.o localsearch.o
 
 default: all
-all: optprimer
+all: mopo16s
 
-optprimer: $(OBJ)
+mopo16s: $(OBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LFLAGS)
 
 %.o: $(SRC)/%.cpp $(DEPS)
 	$(CXX) $(CXXFLAGS) -c -o $@ $< $(LFLAGS)
 
 clean:
-	rm -f $(OBJ) optprimer
+	rm -f $(OBJ) mopo16s
 
 .PHONY: default all clean
 
