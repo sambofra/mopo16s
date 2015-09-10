@@ -1,13 +1,13 @@
 /*
- *  This file is part of the optprimer program.
+ *  This file is part of the mopo16s program.
  *  Copyright (c) Francesco Sambo <sambofra@dei.unipd.it>
  *
- *  optprimer is free software: you can redistribute it and/or modify
+ *  mopo16s is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  optprimer is distributed in the hope that it will be useful, but
+ *  mopo16s is distributed in the hope that it will be useful, but
  *  WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See 
  *  the GNU General Public License for more details.
@@ -225,9 +225,9 @@ void usage()
 {
 	cout << "Copyright (c) 2015 Francesco Sambo, Dept. of Information Engineering," << endl;
 	cout << "University of Padova, Italy" << endl << endl;
-	cout << "optprimer V1.0: optimal multi-objective design of forward and reverse primer" << endl; 
+	cout << "mopo16s V1.0: optimal multi-objective design of forward and reverse primer" << endl; 
 	cout << "sets for metagenomics studies." << endl << endl;
-	cout << "Usage: optprimer [OPTIONS] reference_set_file initial_primer_pairs_file" << endl << endl;
+	cout << "Usage: mopo16s [OPTIONS] reference_set_file initial_primer_pairs_file" << endl << endl;
 	cout << "reference_set_file is a .fasta file containing the reference set of" << endl ;
 	cout << "sequences for which the primer are designed." << endl << endl;
 	cout << "initial_primer_pairs_file is a .fasta file containing a set of (possibly" << endl;
