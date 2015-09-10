@@ -13,10 +13,13 @@ Either use git to directly retrieve the source
 
 or download and decompress the archive.
 
-Inside the newly created directory, compile with:
+mopo16s requires the SeqAn c++ library: set the correct include directory 
+of your SeqAn installation in the Makefile.rules file and then compile with
 
 	make
 
+The executable can then be found in the release folder.
+ 
 To build the html documentation (requires the Doxygen software):
 
 	make doc

@@ -1,6 +1,6 @@
 default: all
 
-all: debug release profile
+all: release
 
 debug:
 	$(MAKE) -C debug
