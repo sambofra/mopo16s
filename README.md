@@ -26,12 +26,13 @@ mopo16s requires:
   of primers and
 - a set of (possibly degenerate) candidate primer pairs from which to 
   begin the search for the optimal primer set.
+
 Both files should be in .fasta format, with the latter saved alternating 
 forward and corresponding reverse primers.
 To generate the files starting from the same repositories used in the 
 mopo16s paper, run:
 
-	cd data
+	cd data	
 	./download_data.sh
 
 Then edit the R script process_data.R to set the required GreenGeenes 
