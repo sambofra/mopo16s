@@ -1,5 +1,4 @@
-## mopo16s: Multi-Objective Primer Optimisation 
-## for 16S experiments
+## mopo16s: Multi-Objective Primer Optimisation for 16S experiments
 Copyright (c) 2015 Francesco Sambo, Dept. of Information Engineering,
 University of Padova
 
