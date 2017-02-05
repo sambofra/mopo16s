@@ -15,5 +15,8 @@ clean:
 	$(MAKE) -C debug clean
 	$(MAKE) -C release clean
 	$(MAKE) -C profile clean
+
+doc:
+	doxygen Doxyfile
 	
-.PHONY: default all debug release profile clean
+.PHONY: default all debug release profile clean doc
