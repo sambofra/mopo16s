@@ -185,16 +185,23 @@ PairSet localSearch( PairSet& init, vector<double>& alpha, Parameters& pars, Bou
 	return bestPair;
 }
 
-Archive multiObjSearch( ReferenceSet& ref, StringSet<IupacString>& goodPairs, Parameters& pars )
+Archive initArchive( ReferenceSet& ref, StringSet<IupacString>& goodPairs, Parameters& pars )
 {
-	uint i;
-	// initialize rng
-	std::mt19937 rng( pars.seed );
-	
+   uint i;
+   
 	// build and populate archive
 	Archive ar;
 	for( i = 0; i < seqan::length(goodPairs); i+=2 )
 		ar.add( PairSet(goodPairs[i], goodPairs[i+1], ref, pars) );
+   
+   return ar;
+}
+
+Archive multiObjSearch( Archive& ar, Parameters& pars )
+{
+	uint i;
+	// initialize rng
+	std::mt19937 rng( pars.seed );
 	
 	// compute Pareto front
 	vector<uint> pFront = ar.paretoFront();

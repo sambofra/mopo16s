@@ -54,7 +54,8 @@ int main( int argc, char * argv[] )
 		{ "seed",					required_argument,	NULL,	's' },
 		{ "restarts", 				required_argument, 	NULL, 'r' },
 		{ "outFileName",			required_argument,	NULL, 'o' },
-		{ "maxMismatches",		required_argument,	NULL,	'M' },
+		{ "outInitFileName",		required_argument,	NULL, 'I' },
+      { "maxMismatches",		required_argument,	NULL,	'M' },
 		{ "minPrimerLen",			required_argument,	NULL,	'l' },
 		{ "maxPrimerLen",			required_argument,	NULL,	'L' },
 		{ "minTm",			  		required_argument,	NULL,	'm' },
@@ -78,7 +79,7 @@ int main( int argc, char * argv[] )
 	// process options
 	int ch; 
 	while (
-		(ch = getopt_long(argc, argv, "s:r:o:M:l:L:m:c:C:D:p:d:S:e:q:t:g:i:T:P:E:h", 
+		(ch = getopt_long(argc, argv, "s:r:o:I:M:l:L:m:c:C:D:p:d:S:e:q:t:g:i:T:P:E:h", 
 		longopts, NULL)) != -1
 		)
 		switch (ch) 
@@ -92,6 +93,9 @@ int main( int argc, char * argv[] )
 			case 'o':
 				params.outFName = optarg;
 				break;
+   		case 'I':
+   			params.outInitFName = optarg;
+   			break;
 			case 'M': 
 				params.maxMism = atoi(optarg);
 				break;
@@ -180,15 +184,48 @@ int main( int argc, char * argv[] )
 	StringSet<CharString> goodPairsNames;
 	readRecords( goodPairsNames, goodPairs, goodFileIn );
 	
+	cout << "Archive initialization" << endl;
+	Archive initAr = initArchive( refSet, goodPairs, params );
+   
+	cout << "Saving the initial primer pairs in "; 
+	cout << params.outInitFName << ".primers" << endl;
+	std::ofstream outInitPrimers( params.outInitFName + ".primers" ); 
+	PairSet ps = initAr.get( 0 );
+	for( uint s = 0; s < initAr.length(); s++ )
+	{
+		ps = initAr.get( s );
+		// print forward primers
+		for( uint p = 0; p < ps.setLength(true); p++ )
+			outInitPrimers << ps.getPrimer(true, p) << "\t";
+		// separator
+		outInitPrimers << "x";
+		// print reverse primers
+		for( uint p = 0; p < ps.setLength(false); p++ )
+			outInitPrimers << "\t" << ps.getPrimer(false, p);
+		outInitPrimers << endl;
+	}
+	outInitPrimers.close();
+	
+	cout << "Saving scores of the primer pairs in "; 
+	cout << params.outInitFName << ".scores" << endl;
+	std::ofstream outInitScores( params.outInitFName + ".scores" );
+	outInitScores << "Efficiency\tCoverage\tVariability" << endl;
+	for( uint s = 0; s < initAr.length(); s++ )
+	{
+		ps = initAr.get( s );
+		outInitScores << ps.getEffSc() << "\t" << ps.getCovSc() << "\t";
+		outInitScores << ps.getVarSc() << endl;
+	} 
+	outInitScores.close();
+   
 	cout << "Optimisation" << endl;
-	Archive ar = multiObjSearch( refSet, goodPairs, params );
+	Archive ar = multiObjSearch( initAr, params );
 	
 	vector<uint> pf = ar.paretoFront();
 	
 	cout << "Saving primer pairs from the final Pareto Front in "; 
 	cout << params.outFName << ".primers" << endl;
 	std::ofstream outPrimers( params.outFName + ".primers" ); 
-	PairSet ps = ar.get( 0 );
 	for( uint s = 0; s < pf.size(); s++ )
 	{
 		ps = ar.get( pf[s] );
@@ -238,7 +275,9 @@ void usage()
 	cout << "  -r, --restarts=INT          Number of restarts of the multi-objective" << endl;
 	cout << "                              optimisation algorithm (default 20)" << endl << endl;
 	cout << "  -o, --outFileName=FNAME     Root name of the output files (default \"out\")" << endl << endl;
-	cout << "  -h, --help                  Print this help and exit" << endl << endl;
+	cout << "  -I, --outInitFileName=FNAME Root name of the files where the initial good" << endl;
+   cout << "                              primer pairs should be saved (default \"init\")" << endl << endl;
+   cout << "  -h, --help                  Print this help and exit" << endl << endl;
 	cout << "Coverage-related options:" << endl << endl;
 	cout << "  -M, --maxMismatches=INT     Maximum number of mismatches between the" << endl;
 	cout << "                              non-3\'-end of the primer and a 16S sequence to" << endl;

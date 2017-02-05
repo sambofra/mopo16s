@@ -73,14 +73,25 @@ public:
 PairSet localSearch( PairSet& init, vector<double>& alpha, Parameters& pars, Bounds& b );
 
 /*! 
-	\brief Multi-objective local search
+	\brief Initialization of the archive for multi-objective local search
 	\param ref ReferenceSet object with the reference sequences that should be covered
 	\param goodPairs StringSet with good degenerate primer pairs, 
 			 alternating forward and reverse primers 
 	\param pars Parameters object containing all required parameters
-*/
-Archive multiObjSearch( ReferenceSet& ref, StringSet<IupacString>& goodPairs, Parameters& pars );
 
+   Returns the initialized archive.
+*/
+Archive initArchive( ReferenceSet& ref, StringSet<IupacString>& goodPairs, Parameters& pars );
+
+/*! 
+	\brief Multi-objective local search
+	\param ar Archive, initialized with a reference set and the sets of good degenerate primer pairs
+	\param pars Parameters object containing all required parameters
+
+   Returns the archive after the optimisation.
+*/
+Archive multiObjSearch( Archive& ar, Parameters& pars );
+   
 /// Sample uniformly at random three weights that sum to 1
 vector<double> sampleAlpha( std::mt19937& rng );
 

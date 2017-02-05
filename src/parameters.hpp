@@ -35,7 +35,8 @@ public:
 		double maxAlenSpanEffQtile = 0.01, uint minMeltTempInterv = 2, 
 		double minGCContInterv = 0.1, double maxDimersInterv = 3, 
 		double deltaTmInterv = 2, uint maxHomopLenInterv = 2,
-   	uint maxAmplLenSpanEffInterv = 50, std::string outFileName = "out" ) :
+   	uint maxAmplLenSpanEffInterv = 50, std::string outFileName = "out",
+      std::string outInitFileName = "init") :
 		seed(randSeed), rest(restarts), minPLen(minPrimerLen), maxPLen(maxPrimerLen),
 		minTm(minMeltTemp), minGC(minGCCont), maxGC(maxGCCont), maxDim(maxDimers),
 		maxHomLen(maxHomopLen),dTm(maxDeltaTm),maxALenSpanCov(maxAmplLenSpanCov), 
@@ -43,7 +44,7 @@ public:
 		minTmInt(minMeltTempInterv), minGCInt(minGCContInterv), 
 		maxDimInt(maxDimersInterv), maxHomLenInt(maxHomopLenInterv),  
 		dTmInt(deltaTmInterv), maxALenSpanEffInt(maxAmplLenSpanEffInterv),
-		outFName(outFileName)
+		outFName(outFileName), outInitFName(outInitFileName)
 	{}
 		
 	// seed of the random number generator
@@ -78,8 +79,9 @@ public:
 	double dTmInt;
 	uint maxALenSpanEffInt;
 	
-	// output file name
+	// output file names
 	std::string outFName;
+   std::string outInitFName;
 };
 
 	
