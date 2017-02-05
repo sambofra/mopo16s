@@ -260,9 +260,10 @@ void PairSet::computeScores()
 	// amplicon length span
 	if( stats.median > 0 ) // otherwise no coverage at all
 	{
-		int span = stats.median - stats.quantile;
+      double span = stats.median - stats.quantile;
+         
 		if( span > pars->maxALenSpanEff )
-			eff[8] = std::max( (double)(pars->maxALenSpanEff + pars->maxALenSpanEffInt - span) /
+			eff[8] = std::max( (pars->maxALenSpanEff + pars->maxALenSpanEffInt - span) /
 				 pars->maxALenSpanEffInt, 0.0 );
 		else eff[8] = 1;
 	}
@@ -304,7 +305,7 @@ void PairSet::computeScores()
 	// Effibiliy score as sum of eff
 	feaScore = std::accumulate(eff.begin(), eff.end(), 0.0);
 	//for( i = 0; i < 10; i++ )
-	//	std::cout << eff[i] << " ";
+   //	std::cout << eff[i] << " ";
 	//std::cout << "\n";
 	//std::cout << "Effibility score: " << feaScore << "\n";
 }
