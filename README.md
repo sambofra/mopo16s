@@ -31,8 +31,11 @@ mopo16s requires:
 
 Both files should be in .fasta format, with the latter saved alternating 
 forward and corresponding reverse primers.
-To generate the files starting from the same repositories used in the 
-mopo16s paper, run:
+
+To generate the two files, rep_set.fasta and good_pairs.fasta, 
+starting from the same repositories used in the mopo16s paper, 
+first set the required GreenGeenes cluster similarity level for the 
+reference set in the shell script download_data.sh, then run:
 
 	cd data	
 	./download_data.sh
